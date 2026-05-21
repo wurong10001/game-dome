@@ -1,0 +1,61 @@
+name: Build & Release Kivy APK
+
+# 触发条件：
+# 1. 推送带有 v 开头的标签（如 v1.0, v2.1.3）时自动触发打包和发布
+# 2. 允许在 GitHub 网页上手动点击按钮触发
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 必须添加这个权限，否则无法创建 Release 和上传文件
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # 3. 安装系统依赖和 Buildozer
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git \
+            zip \
+            unzip \
+            openjdk-17-jdk \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            libltdl-dev
+          pip install buildozer cython
+
+      # 4. 执行打包
+      - name: Build APK with Buildozer
+        run: |
+          buildozer android clean
+          buildozer -v android debug
+        env:
+          TMPDIR: /tmp
+
+      # 5. 自动创建 GitHub Release 并上传 APK
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2  # 这是一个非常流行的第三方发布插件
+        with:
+          files: bin/*.apk  # 指定要上传的 APK 文件路径
+          generate_release_notes: true  # 自动生成版本更新说明
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动提供的令牌
