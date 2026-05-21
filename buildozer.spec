@@ -42,7 +42,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,moderngl==5.5.7
+requirements = python3,kivy
 requirements.source.libffi.patches = fix-underscore.patch
 
 # (str) Custom source folders for requirements
