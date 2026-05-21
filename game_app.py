@@ -1,17 +1,20 @@
+# 依赖
 from kivy.app import App
-from kivy.uix.floatlayout import FloatLayout
-from test_level import TestLevel
 
 class GameApp(App):
     def build(self):
-        # 主菜单设置为 TestLevel 的 widget
-        level = TestLevel()  # 生成关卡
-        return level.get_widget()
+        # 主菜单
+        menu = MainMenu()
+        menu.bind_events(self.on_start_game, self.on_settings)
+        return menu
 
-from kivy.uix.floatlayout import FloatLayout
+    def on_start_game(self, instance):
+        # 进入测试关卡
+        self.root.clear_widgets()
+        test = TestLevel()
+        self.root.add_widget(test.get_widget())
 
-class GameApp(App):
-    def build(self):
-        # 简单布局，仅待后续扩展
-        root = FloatLayout()
-        return root
+    def on_settings(self, instance):
+        # Placeholder
+        pass
+
