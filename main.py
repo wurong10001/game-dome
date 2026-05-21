@@ -1,4 +1,8 @@
-from kivy.app import App
+from game_app import GameApp
+
+if __name__ == "__main__":
+    GameApp().run()
+
 from kivy.uix.floatlayout import FloatLayout
 from main_menu import MainMenu
 from test_level import TestLevel
