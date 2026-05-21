@@ -42,7 +42,9 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = python3,kivy,numpy
+
+p4a.extra_pip_args = --no-cache-dir
 requirements.source.libffi.patches = fix-underscore.patch
 
 # (str) Custom source folders for requirements
