@@ -6,13 +6,13 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = dome
 
 # (str) Package name
 package.name = dome
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.wurong
+package.domain = org.wurong.dome
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -42,7 +42,8 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.10.13,kivy,moderngl
+requirements = python3,kivy,moderngl==5.5.7
+requirements.source.libffi.patches = fix-underscore.patch
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -118,7 +119,7 @@ fullscreen = 0
 #android.sdk = 28
 
 # (str) Android NDK version to use
-#android.ndk = 25c
+#android.ndk = 21e
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 #android.ndk_api = 21
@@ -351,7 +352,7 @@ android.allow_backup = True
 
 # (str) Bootstrap to use for android builds
 # Run "buildozer android p4a -- bootstraps" for a list of valid values.
-# p4a.bootstrap = sdl2
+p4a.bootstrap = sdl2
 
 # (int) port number to specify an explicit --port= p4a argument (eg for bootstrap flask)
 #p4a.port =

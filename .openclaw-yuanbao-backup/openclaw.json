@@ -1,0 +1,25 @@
+{
+  "plugins": {
+    "entries": {
+      "openclaw-plugin-yuanbao": {
+        "enabled": true
+      }
+    },
+    "allow": [
+      "openclaw-plugin-yuanbao"
+    ]
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.5.19",
+    "lastTouchedAt": "2026-05-21T03:11:07.298Z"
+  },
+  "channels": {
+    "yuanbao": {
+      "appKey": "kFGdZGsMMMGeMRwOY4QM22xPERB42Wcy",
+      "appSecret": "WiDZ4IXmFtYNVgdOFanLdh0YhGueIXdg",
+      "apiDomain": "bot.yuanbao.tencent.com",
+      "wsUrl": "wss://bot-wss.yuanbao.tencent.com/wss/connection",
+      "enabled": true
+    }
+  }
+}
