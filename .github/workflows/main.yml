@@ -54,7 +54,7 @@ jobs:
 
       # 5. 上传生成的 APK 作为构建产物
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-kivy-app-debug
           path: bin/*.apk  # 上传 bin 目录下生成的 apk 文件
