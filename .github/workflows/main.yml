@@ -1,0 +1,60 @@
+name: Build Kivy APK
+
+# 触发条件：当你向 main 或 master 分支推送代码，或者发起 Pull Request 时触发
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  # 如果你想手动点击按钮触发打包，可以保留下面这行
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 使用 GitHub 提供的最新 Ubuntu 虚拟机
+
+    steps:
+      # 1. 检出你的代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. 安装系统依赖和 Buildozer
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            git \
+            zip \
+            unzip \
+            openjdk-17-jdk \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            libltdl-dev
+          pip install buildozer cython
+
+      # 4. 清理并执行打包
+      - name: Build APK with Buildozer
+        run: |
+          # 清理之前可能残留的缓存
+          buildozer android clean
+          # 执行打包（第一次运行会下载 SDK/NDK，耗时较长，请耐心等待）
+          buildozer -v android debug
+        env:
+          # 强制指定 /tmp 为临时目录，利用 GitHub 虚拟机充足的临时空间
+          TMPDIR: /tmp
+
+      # 5. 上传生成的 APK 作为构建产物
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-kivy-app-debug
+          path: bin/*.apk  # 上传 bin 目录下生成的 apk 文件
