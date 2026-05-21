@@ -11,3 +11,4 @@
 # - 纹理贴图（kivy.graphics.texture）
 # - 法线计算（折线）
 # - 深度测试（glEnable(GL_DEPTH_TEST) via pyglet/glctypes）
+# 注意：已移除 kivy3d 依赖，改用 moderngl + Kivy Canvas 原生 GLES 2.0
