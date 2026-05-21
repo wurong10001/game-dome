@@ -43,13 +43,18 @@ jobs:
             libltdl-dev
           pip install buildozer cython
 
-      # 4. 执行打包
+            # 4. 执行打包 (修复 ModuleNotFoundError 问题)
       - name: Build APK with Buildozer
         run: |
           buildozer android clean
-          buildozer -v android debug
+          # 关键修复：使用 python -m buildozer 而不是直接调用 buildozer
+          # 这样能确保使用当前环境中已安装模块的 Python 解释器
+          python -m buildozer -v android debug
         env:
           TMPDIR: /tmp
+          # 强制 Buildozer 使用当前 Python 路径，避免路径错乱
+          PYTHONPATH: ${{ github.workspace }}/.buildozer/python-install/lib/python3.10/site-packages:$PYTHONPATH
+
 
       # 5. 自动创建 GitHub Release 并上传 APK
       - name: Create GitHub Release and Upload APK
