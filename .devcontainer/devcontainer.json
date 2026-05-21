@@ -1,5 +1,18 @@
 {
   "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "postCreateCommand": "npm install -g npm@latest && npm install -g @anthropic-ai/claude-code"
+  "postCreateCommand": "npm install -g npm@latest && npm install -g @anthropic-ai/claude-code",
+  
+  // --- 关键配置：强制指定高配机器 ---
+  "machineType": "standardLinux4x", 
+  
+  // 其他推荐配置（可选，提升开发体验）
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-python.python"
+      ]
+    }
+  },
+  "forwardPorts": [8000, 3000]
 }
-
