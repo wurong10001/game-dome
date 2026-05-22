@@ -1,63 +1,68 @@
-name: Build & Release Kivy APK
+name: Build and Release Android APK
 
-# 触发条件
+# 触发条件：仅允许在 GitHub 网页端手动点击按钮触发打包
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build and Release APK
+    runs-on: ubuntu-latest # 使用 GitHub 提供的 Ubuntu 最新虚拟机
     permissions:
-      contents: write
+      contents: write # 赋予工作流向仓库写入内容（创建 Release 和上传附件）的权限
 
     steps:
-      # 1. 检出代码
+      # 1. 检出你的代码仓库
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 设置 Python 环境
+      # 2. 设置 Java 环境 (Buildozer 打包安卓应用需要 JDK 17)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.x'
 
-      # 3. 安装系统依赖和 Buildozer
+      # 4. 安装系统依赖和 Python 依赖
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            git \
-            zip \
-            unzip \
-            openjdk-17-jdk \
-            autoconf \
-            automake \
-            libtool \
-            pkg-config \
-            libltdl-dev
-          pip install buildozer cython
+          sudo apt-get install -y build-essential git zip unzip \
+            autoconf automake libtool pkg-config zlib1g-dev \
+            libncurses5-dev libffi-dev libssl-dev
+          pip3 install buildozer cython
 
-      # 4. 执行打包 (修复缩进与路径问题)
+      # 5. 预下载 Android SDK 和 NDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android NDK and Build Tools
+        run: |
+          sdkmanager "platforms;android-33" "build-tools;33.0.2" "ndk;28.0.13004108"
+
+      # 6. 执行 Buildozer 打包
       - name: Build APK with Buildozer
         run: |
-          # 清理旧构建缓存
-          buildozer android clean
-          # 使用 python -m 强制调用当前环境的 python 解释器
-          python -m buildozer -v android debug
-        env:
-          TMPDIR: /tmp
-          # 防止 p4a 读取旧的缓存路径
-          P4A_SOURCE_DIR: ""
+          # 修复 Buildozer 寻找 sdkmanager 的路径问题 (创建软链接)
+          mkdir -p $ANDROID_HOME/tools/bin
+          ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $ANDROID_HOME/tools/bin/sdkmanager
+          
+          # 直接使用 buildozer 进行打包
+          buildozer android debug
 
-      # 5. 自动创建 GitHub Release 并上传 APK
-      - name: Create GitHub Release and Upload APK
+      # 7. 自动创建/更新 Release 并上传 APK
+      - name: Create or Update Beta Release
         uses: softprops/action-gh-release@v2
         with:
-          files: bin/*.apk
-          generate_release_notes: true
+          tag_name: beta           # 固定标签名为 beta
+          name: GameDome Beta Build # Release 的显示名称
+          prerelease: true         # 标记为预发布版本（Beta）
+          generate_release_notes: true # 自动生成更新日志
+          files: bin/*.apk         # 指定要上传的 APK 文件路径
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用 GitHub 自动生成的令牌进行授权
