@@ -45,9 +45,16 @@ jobs:
         run: |
           sdkmanager "platforms;android-33" "build-tools;33.0.2" "ndk;28.0.13004108"
 
-      # 6. 执行 Buildozer 打包
+            # 6. 执行 Buildozer 打包
       - name: Build APK with Buildozer
         run: |
+          # 【新增修复1】强制安装稳定版的 build-tools (34.0.0)，避免 37.0 版本许可协议未接受的问题
+          sdkmanager "build-tools;34.0.0"
+          
+          # 【新增修复2】建立软链接，把官方 Action 下载的 SDK 映射到 Buildozer 默认寻找的路径
+          mkdir -p /home/runner/.buildozer/android/platform
+          ln -sf /usr/local/lib/android/sdk /home/runner/.buildozer/android/platform/android-sdk
+          
           # 修复 Buildozer 寻找 sdkmanager 的路径问题 (创建软链接)
           mkdir -p $ANDROID_HOME/tools/bin
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $ANDROID_HOME/tools/bin/sdkmanager
@@ -55,6 +62,7 @@ jobs:
           # 直接使用 buildozer 进行打包
           buildozer android debug
 
+         
       # 7. 自动创建/更新 Release 并上传 APK
       - name: Create or Update Beta Release
         uses: softprops/action-gh-release@v2
