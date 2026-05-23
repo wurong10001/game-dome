@@ -6,20 +6,13 @@ import logging
 class DebugFileHandler(logging.Handler):
     def __init__(self):
         super().__init__()
-        # 尝试在手机根目录创建日志文件夹
         log_dir = '/storage/emulated/0/wurong/demo'
-        try:
-            os.makedirs(log_dir, exist_ok=True)
-            # 使用下划线代替冒号，因为安卓系统文件名不支持冒号
-            sub_dir = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M')
-            full_dir = os.path.join(log_dir, sub_dir)
-            os.makedirs(full_dir, exist_ok=True)
-            log_file = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_demo_boot.log')
-            self.log_path = os.path.join(full_dir, log_file)
-            self.setLevel(logging.DEBUG)
-        except Exception as e:
-            print(f"无法创建日志文件夹，可能是缺少存储权限: {e}")
-            self.log_path = None
+        sub_dir = datetime.datetime.now().strftime('%Y:%m:%d：%H/%M')
+        full_dir = os.path.join(log_dir, sub_dir)
+        os.makedirs(full_dir, exist_ok=True)  # Ensure parent directories exist
+        log_file = datetime.datetime.now().strftime('%Y:%m:%d：%H-%M-demo-boot.log')
+        self.log_path = os.path.join(full_dir, log_file)
+        self.setLevel(logging.DEBUG)
 
     def emit(self, record):
         log_entry = self.format(record) + '\n'
