@@ -1,1 +1,1 @@
-{"android:sdk_installation": ["33", "24", "28c", "/home/codespace/android-sdk", "/home/codespace/android-sdk/ndk/28.0.13004108"], "cache.build_id": "2", "android:latestapk": "dome-0.1-arm64-v8a_armeabi-v7a-debug.apk", "android:latestmode": "debug"}
+{"android:sdk_installation": ["33", "24", "28c", "/home/codespace/android-sdk", "/home/codespace/android-sdk/ndk/28.0.13004108"], "cache.build_id": "3", "android:latestapk": "dome-0.1-arm64-v8a_armeabi-v7a-debug.apk", "android:latestmode": "debug"}
